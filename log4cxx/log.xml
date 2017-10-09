@@ -1,0 +1,35 @@
+ <?xml version="1.0" encoding="UTF-8"?>     
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">     
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/' >     
+    <appender name="Console" class="org.apache.log4j.ConsoleAppender">     
+        <layout class="org.apache.log4j.PatternLayout">     
+     <param name="ConversionPattern" value="[tid %t] %d{ISO8601} [%-5p] %c{2\} (%l) - %m%n" />
+        </layout>     
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">     
+            <param name="levelMin" value="debug" />     
+            <param name="levelMax" value="warn" />     
+            <param name="AcceptOnMatch" value="true" />     
+        </filter>     
+    </appender>     
+       
+    <appender name="Test_Log" class="org.apache.log4j.DailyRollingFileAppender">     
+        <param name="File" value="Log/Test_Log/Test_Log.log" />       
+        <param name="DatePattern" value="'.'yyyy-MM-dd'.log'" />       
+        <layout class="org.apache.log4j.PatternLayout">     
+         <param name="ConversionPattern"       
+            value="[tid %t] %d{ISO8601} [%-5p] %c{2\} (%l) - %m%n" />     
+        </layout>       
+    </appender>     
+    
+    <logger name="system" additivity="false">  <!-- set logger setting -->   
+        <level value="debug"/>              <!-- 设置级别 -->
+        <appender-ref ref="Test_Log" />    <!-- 与前面的通道id相对应 --> 
+        <appender-ref ref="Console" />      <!-- 与前面的通道id相对应 -->      
+    </logger> 
+     
+    <!-- 设置接收所有输出的通道 -->   
+    <root>     
+        <priority value ="debug"/>     
+        <appender-ref ref="Console"/> ><!-- 与前面的通道id相对应 -->    
+    </root>     
+</log4j:configuration> 

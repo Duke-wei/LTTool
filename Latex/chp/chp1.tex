@@ -1,0 +1,150 @@
+\chapter{C++ 语言基础}
+\section{String和char*的主要区别}
+	\begin{itemize}
+		\item string的内存管理是由系统处理，除非系统内存池用完，不然不会出现这种内存问题。char *的内存管理由用户自己处理，很容易出现内存不足的问题。当我们要存一个串，但是不知道其他需要多少内存时， 用string来处理就最好不过了。当你知道了存储的内存的时候，可以用char *，但是不如用string的好，用指针总会有隐患。用string还可以使用各种成员函数来处理串的每一个字符，方便处理。用char *处理串，就不如string的方便了，没有相应的函数来直接调用，而是要自己编写函数来完成串的处理，而且处理过程中用指针还很容易出现内存问题。
+
+我建议尽量使用string，不用char*；尽量使用vector（关联数组），不用数组；尽量使用迭代器，而不用指针。
+		\item string这个是STL里的一个容器，操作字符串非常方便；char*是一个指针，可以指向一个字符串数组，至于这个数组既可以在栈上分配，也可以在堆上分配，堆的话就需要手动释放。注意使用string的时候，一定要注意构造和拷贝以及析构带来的性能开销，尽可能的减少构造，能使用引用的地方尽量使用引用，减少不必要的构造。 
+	\end{itemize}
+
+
+\section{char* char[] string 转换}
+	\begin{itemize}
+		\item char*转string:可以直接赋值。
+		\item char*转char[]:不能直接赋值，可以循环char*字符串，逐个字符赋值，也可以使用strcpy\_s等函数。
+		\item char[]转string:可以直接赋值。
+		\item char[]转char*:可以直接赋值。
+		\item string转char*:调用string对象的c\_char函数(返回的是const char*)。
+		\item string转char[]:不能直接赋值，可以循环char*字符串逐个字符赋值，可可以使用strcpy\_s等函数。
+	\end{itemize}
+
+
+\section{内存分配方式}
+在C++中，内存分成5个区，它们分别是堆、栈、自由存储区、全局/静态存储区和常量存储区。
+	\begin{itemize}
+		\item 栈:在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束时会自动释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。
+		\item 堆:就是由new分配的内存块，它们的释放编译器不管，由应用程序自己去控制，一般一个new就要对应一个delete。如果程序员没有释放申请的内存，则造成内存泄露。不过，程序结束后，操作系统会自动回收。
+		\item 自由存储区:就是由malloc等分配的内存块，这个和堆十分相似，不过它是用free来结束自己生命的。
+		\item 全局/静态存储区:全局变量和静态变量被分配到同一块内存中，在以前的C语言中，全局变量又fen为初始化和未初始化的，在C++里面没有这个区分，它们共同占用同一块内存区。
+		\item 常量存储区:这个是一个特殊的存储区，它们存放的是常量，不允许修改。
+	\end{itemize}
+
+
+\section{访问权限}
+private,public,protected三个关键之的访问范围。注意，类的继承默认是private的，而struct的继承默认是public的。
+	\begin{itemize}
+		\item private:只能由该类中的函数、其友元函数访问，不能被其他任何访问，该类的对象也不能访问。
+		\item protectd:可以被该类中的函数、子类的函数、以及其友元函数访问，但不能被该类的对象访问。 
+		\item public:可以被该类中的函数、子类的函数、其友元函数访问，也可以由该类的对象访问。 
+	\end{itemize}
+
+表格显示了继承关系中的访问权限：\\
+	\begin{table}[htbp]
+		\caption{访问权限表格}
+		\centering
+		\begin{tabular}{cccc}
+			\toprule
+			&A类(基类)&B类(A的子类)&C类(B的子类)\\
+			\midrule
+			\multirow{3}{*}{\centering 公有继承}&公有成员&共有成员&公有成员\\
+			&私有成员&无&无\\
+			&保护成员&保护成员&保护成员\\
+			\midrule
+			\multirow{3}{*}{\centering 保护继承}&公有成员&保护成员&保护成员\\
+			&私有成员&无&无\\
+			&保护成员&保护成员&保护成员\\
+			\midrule
+			\multirow{3}{*}{\centering 私有继承}&公有成员&私有成员&无\\
+			&私有成员&无&无\\
+			&保护成员&私有成员&无\\
+			\bottomrule
+		\end{tabular}
+	\end{table}
+
+\section{Problem One}
+分析以下代码的输出
+\begin{lstlisting}[language={[ANSI]C},numbers=left,numberstyle=\tiny,%frame=shadowbox,
+   rulesepcolor=\color{red!20!green!20!blue!20},
+   keywordstyle=\color{blue!70!black},
+   commentstyle=\color{blue!90!},
+   basicstyle=\ttfamily]
+class B{
+public:
+	B(){
+		cout<<"default constructor"<<endl;
+	}
+	~B(){
+		cout<<"destructed"<<endl;
+	}
+	B(int i):data(i){
+		cout<<"constructed by parameter " << data <<endl;
+	}
+	private:
+		int data;
+};
+B Play( B b){
+	return b ;
+}
+int main(int argc, char* argv[]){                                     
+	B t1 = Play(5); 
+	B t2 = Play(t1);   　 
+	return 0; 　　　　　　　　　　　　　　 
+}
+\end{lstlisting}
+输出结果：\\
+constructred by parameter5 \\
+destructed \\
+destructed \\
+destructed \\
+destructed \\
+
+说明：非引用形成都是拷贝数值构造的，所以调用Play函数时，int值构造函数构造形参对象，返回拷贝构造的对象，形参对象析构，同理t2的过程，通过数值拷贝，即拷贝构造形参对象，返回拷贝构造对象，析构形参对象，最后析构t2,然后析构t1。
+
+\section{多态}
+C++语言中，多态可以分为通用多态和特定多态，其中通用多态指参数多态(模板)和包含多态(virtual)，而特定多态指重载多态和强制多态(强制类型转换)。
+
+\section{Int最小值}
+C++中通过头文件<limits.h>获取最小值和最大值，int有INT\_MAX和INT\_MIN。\\
+关于Int取最小值的问题，首先要明白计算机中是通过补码来存储数值的，在32位系统中，Int占4个字节，Int的最大值即存储位0X7FFFFFFF，即首位为0，其余为1，注意这个是补码，而整数的补码和反码和源码一样，所以最大值为2$^{32}$-1。Int的最小值为0X80000000，即首位为1，其余是0，注意这个是补码，而负数的反码为源码符号位不变，其他取反，负数的补码为其反码+1，通过将0X80000000取补码即最小值为-2$^{32}$。
+
+\section{柔性数组}
+对于变长数组和变长结构体，这是在C99才加入标准的。
+\begin{lstlisting}[language={[ANSI]C},numbers=left,numberstyle=\tiny,%frame=shadowbox,
+   rulesepcolor=\color{red!20!green!20!blue!20},
+   keywordstyle=\color{blue!70!black},
+   commentstyle=\color{blue!90!},
+   basicstyle=\ttfamily]
+int main(){
+	int n = 10;
+	int arr[n]; //变长数组
+}
+//变长结构体，sizeof(Node)=4
+//data不占用Node的空间，只是作为一个符号地址的存在，而且
+//必须是结构体的最后一个成员。
+struct Node{
+	int size;
+	char data[0];
+}
+\end{lstlisting}
+
+\section{Double存储舍入误差问题}
+Double存储的舍入误差问题核心：小数点后的权位是2的负数次方才没有误差。
+
+\section{静态变量、局部变量、全局变量}
+1.从作用于看：\\
+C++变量更具定义的位置不同的生命周期，具有不同的作用域，可以分为六种：全局作用域、局部作用域、语句作用域、类作用域、命名空间作用域和文件作用域。\\
+\begin{itemize}
+	\item 全局变量具有全局作用域。全局变量只需在一个源文件中定义，就可以作用于所有的源文件。注意，其它不包含全局变量的源文件需要用extern关键字声明这个变量。
+	\item 静态局部变量具有局部作用域。它只被初始化一次，它和全局变量的区别在于，全局变量对于所有函数可见，而静态局部变量只对定义自己的函数可见。
+	\item 局部变量也只有局部作用域。它是自动对象(auto)，它只在函数执行期间存在，函数一次调用结束后就被撤销，所占用的内存也被回收。
+	\item 静态全局变量也具有全局作用域，它与全局变量的区别在于如果程序包含多个文件，它作用与定义它的文件内，而不能作用其它文件，即只有文件作用域。这样即使两个不同的源文件定义了相同的静态全局变量，他们也是不同的变量。
+\end{itemize}
+2.从内存分配空间看：\\
+\begin{itemize}
+	\item 全局变量、静态局部变量、静态全局变量都在静态存储区分配空间，而局部变量在栈里分配空间。
+	\item 全局变量、静态全局变量以及静态局部变量都会被放在程序的静态数据存储区中，这样可以在下一次调用的时候保持原来的值，这一点是他们与堆变量和栈变量的区别。
+\end{itemize}
+上面的分析可以看出，局部变量改变为静态局部变量后改变了它的存储方式即改变了它的生存周期。全局变量改为静态全局变量后改变的是它的作用域，限制了它的使用范围。
+
+
+

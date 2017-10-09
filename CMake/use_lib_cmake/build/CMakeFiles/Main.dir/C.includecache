@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/wengwei/work/test/Lib/libtest.h
+
+/home/wengwei/work/test/main.c
+stdio.h
+-
+Lib/libtest.h
+/home/wengwei/work/test/Lib/libtest.h
+

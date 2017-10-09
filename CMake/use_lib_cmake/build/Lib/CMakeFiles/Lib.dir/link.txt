@@ -1,0 +1,2 @@
+/usr/bin/ar cq libLib.a  CMakeFiles/Lib.dir/libtest.c.o
+/usr/bin/ranlib libLib.a

@@ -1,0 +1,94 @@
+ #log4cxx主要是由三部分组成：loggers, appenders和layouts.这三个主要组成部分，协同协作能够使我们根据实际的需要进行日志的输出，它#们规定了日志信息的类型和级别，控制应用程序运行时的日志信息组成方式以及日志记录的输出方式。
+
+#Logger是Log4cxx的核心，Logger具有继承关系的层次结构，最顶层为RootLogger,每个Logger都有一个级别(Level),每个Logger可以附加多个#Appender.Appender代表了日志输出的目标，对于每一个Appender可以通过Layout进行格式配置。
+
+#Logger命名：保持Logger与其所在的类的名称一致的方法是目前所知的最好的命名策略。
+
+#一个关于Logger继承的例子：
+
+#设置root logger 为DEBUG级别，使用了ca, fa两个Appender
+
+log4j.rootLogger = DEBUG, ca, fa
+
+#设置list logger
+
+log4j.logger.list = DEBUG, listApp
+
+#设置list.voice logger
+
+log4j.logger.list.voice= INFO, listVoice, listVoiceBak
+
+list是list.voice的父亲Logger, list.voice是list的儿子Logger. rootLogger是根Logger, 在此例中list和list.voice两个Logger又都继承了rootLogger，不过只是继承了Appenders,Level并没有继。（此解有待验证）
+
+ 
+
+还是看配置文件：log4cxx.properties
+
+# 设置root logger为DEBUG级别，使用了ca和fa两个Appender 
+log4j.rootLogger=DEBUG, fa, ca 
+# 设置.listApp logger,屏蔽logger-list的LEVEL继承 
+log4j.logger.listApp=DEBUG, listApp
+
+# 设置.listApp2 logger,屏蔽logger-list的LEVEL继承 
+log4j.logger.listApp2=DEBUG, listApp2
+
+#屏蔽listApp的Appender继承 
+log4j.additivity.listApp=false
+
+#屏蔽listApp2的Appender继承 
+log4j.additivity.listApp2=false
+
+ 
+
+#对Appender fa进行设置：# 这是一个文件类型的Appender， 
+log4j.appender.fa=org.apache.log4j.FileAppender 
+log4j.appender.fa.ImmediateFlush=true
+
+# 其输出文件（File）为 Runlog.log， 
+log4j.appender.fa.File=Runlog.log 
+log4j.appender.fa.layout=org.apache.log4j.PatternLayout
+
+# 输出方式（Append）为覆盖方式， 
+log4j.appender.fa.Append=false
+
+# 输出格式（layout）为PatternLayout 
+log4j.appender.fa.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %.16c - %m%n
+
+ 
+
+ 
+
+#对Appender ca进行设置：
+
+# 这是一个控制台类型的Appender 
+log4j.appender.ca=org.apache.log4j.ConsoleAppender
+
+# 输出格式（layout）为PatternLayout 
+log4j.appender.ca.layout=org.apache.log4j.PatternLayout 
+log4j.appender.ca.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %.16c - %m%n
+
+ 
+
+#对Appender listApp进行设置# 这是一个文件类型的Appender， 
+log4j.appender.listApp=org.apache.log4j.FileAppender
+
+#立即写入日志文件 
+log4j.appender.listApp.ImmediateFlush=true
+
+# 其输出文件（File）为 listApp.log 
+log4j.appender.listApp.File=listApp.log
+
+# 输出方式（Append）为覆盖方式， 
+log4j.appender.listApp.Append=false 
+log4j.appender.listApp.layout=org.apache.log4j.PatternLayout 
+log4j.appender.listApp.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %.16c - %m%n
+
+ 
+
+#对Appender listApp2进行设置 
+log4j.appender.listApp2=org.apache.log4j.FileAppender 
+log4j.appender.listApp2.ImmediateFlush=true 
+log4j.appender.listApp2.File=listApp2.log 
+log4j.appender.listApp2.Append=false 
+log4j.appender.listApp2.layout=org.apache.log4j.PatternLayout 
+log4j.appender.listApp2.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %.16c - %m%n

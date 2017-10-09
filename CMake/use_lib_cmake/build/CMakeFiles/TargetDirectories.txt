@@ -1,0 +1,2 @@
+/home/wengwei/work/test/build/CMakeFiles/Main.dir
+/home/wengwei/work/test/build/Lib/CMakeFiles/libtest.dir
